@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Nexora · Colección para Nuvio</title>
+<style>
+:root{/* COLORES del logo de Nexora: cambia aquí la paleta */--bg:#03040a;--panel:#0a0c18;--tile:#0f1226;--field:#070914;--line:#1f2446;--tx:#f4f6ff;--mut:#8f96b8;--c1:#18d6ee;--c2:#b052f5;--grad:linear-gradient(120deg,#18d6ee,#2f7cf5 42%,#a21cf0 78%,#d726e8);--soft:color-mix(in srgb,var(--c2) 16%,transparent);--ok:#4ade80;--err:#f87171}
+*{box-sizing:border-box}
+body{margin:0;background:radial-gradient(800px 420px at 8% -8%,#18d6ee24,transparent),radial-gradient(800px 420px at 100% 0,#a21cf02e,transparent),var(--bg);background-attachment:fixed;color:var(--tx);font:16px/1.55 "Segoe UI",system-ui,sans-serif}
+header{padding:56px 24px 28px;max-width:1200px;margin:auto}
+h1{font-size:clamp(2.2rem,6vw,4rem);line-height:1.05;margin:0 0 12px;letter-spacing:-.03em;font-weight:800;background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+header p{max-width:60ch;color:var(--mut);margin:0}
+main{max-width:1200px;margin:auto;padding:0 24px 60px;display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:28px;align-items:start}
+@media(max-width:900px){main{grid-template-columns:1fr}}
+.bar{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:14px;color:var(--mut);font-size:.9rem}
+.col{margin-bottom:22px}
+.col>summary{cursor:pointer;font-size:1.15rem;font-weight:600;margin-bottom:12px;list-style:none;display:flex;align-items:center;gap:8px}
+.col>summary::-webkit-details-marker{display:none}
+.col>summary::before{content:"▾";color:var(--c1);transition:transform .2s}
+.col:not([open])>summary::before{transform:rotate(-90deg)}
+.cnt{color:var(--mut);font-size:.85rem;font-weight:400}
+.lnk{background:none;border:0;color:var(--c1);cursor:pointer;font:inherit;padding:0}
+.bx{display:block;width:100%;text-align:left;margin:0;background:var(--field);border:1px dashed var(--c2);border-radius:10px;color:var(--tx);padding:10px;cursor:copy;font:inherit}
+.bx span{display:block;color:var(--c1);font-size:.85rem;margin-bottom:6px}
+.bx pre{margin:0;max-height:140px;overflow:auto;font:12px/1.4 ui-monospace,monospace;white-space:pre-wrap;word-break:break-all;color:var(--mut)}
+@media(min-width:901px){.panel{max-height:calc(100vh - 32px);overflow:auto}}
+footer{max-width:1200px;margin:0 auto;padding:26px 24px 40px;border-top:1px solid var(--line);text-align:center;color:var(--mut);font-size:.9rem}
+footer b{background:var(--grad);-webkit-background-clip:text;background-clip:text;color:transparent}
+.col h3{margin:0 0 12px;font-size:1.15rem}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;align-items:start}
+.tile{position:relative;border-radius:14px;overflow:hidden;background:var(--tile);border:1px solid var(--line);display:flex;align-items:center;justify-content:center}
+.tile.landscape{aspect-ratio:16/9}.tile.poster{aspect-ratio:2/3}.tile.square{aspect-ratio:1}
+.tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.tile .emo{font-size:2rem}
+.tile b{position:absolute;left:0;right:0;bottom:0;padding:18px 8px 7px;font-size:.78rem;text-align:center;background:linear-gradient(transparent,#000c)}
+.panel{background:linear-gradient(var(--panel),var(--panel)) padding-box,var(--grad) border-box;border:1px solid transparent;border-radius:20px;padding:24px 22px 26px;position:sticky;top:16px;box-shadow:0 12px 44px #18d6ee14,0 -4px 30px #a21cf014;scrollbar-width:thin;scrollbar-color:var(--c2) transparent}
+.panel::-webkit-scrollbar{width:8px}.panel::-webkit-scrollbar-track{background:transparent;margin:18px 0}.panel::-webkit-scrollbar-thumb{background:var(--grad);border-radius:8px}
+.panel h2{margin:0 0 4px;font-size:1.25rem}
+.panel .sub{color:var(--mut);font-size:.9rem;margin:0 0 16px}
+.tabs{display:flex;gap:6px;margin-bottom:14px}
+.tabs button{flex:1;padding:9px;border-radius:10px;border:1px solid var(--line);background:none;color:var(--mut);font:inherit;cursor:pointer}
+.tabs button.on{color:var(--tx);border-color:var(--c2);background:var(--soft)}
+input[type=email],input[type=password],input[type=text],select{width:100%;padding:11px 12px;margin-bottom:10px;border-radius:10px;border:1px solid var(--line);background:var(--field);color:var(--tx);font:inherit}
+input:focus,select:focus,button:focus-visible{outline:2px solid var(--c1);outline-offset:1px}
+.btn{width:100%;padding:12px;border:0;border-radius:12px;background:var(--grad);color:#07070d;font:inherit;font-weight:700;cursor:pointer}
+.btn.ghost{background:none;border:1px solid var(--line);color:var(--tx);font-weight:500;margin-top:8px}
+.btn:disabled{opacity:.5;cursor:wait}
+.opt,.pf{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer}
+.pf.lock{opacity:.5;cursor:not-allowed}
+.opt small{display:block;color:var(--mut)}
+#log{margin-top:14px;font-size:.88rem;color:var(--mut);min-height:1.3em;white-space:pre-line}
+#log.ok{color:var(--ok)}#log.err{color:var(--err)}
+.note{font-size:.8rem;color:var(--mut);margin-top:14px}
+.demo{border:1px dashed var(--c2);border-radius:12px;padding:10px 14px;margin-bottom:18px;color:var(--mut);font-size:.88rem}
+.who{display:flex;justify-content:space-between;align-items:center;font-size:.88rem;color:var(--mut);margin-bottom:14px}
+.who button{background:none;border:0;color:var(--c1);cursor:pointer;font:inherit}
+.mk{margin:0 0 14px}.mk summary{cursor:pointer;color:var(--c1);font-size:.9rem;margin-bottom:10px}
+.mk input[type=color]{width:100%;height:42px;padding:2px;margin-bottom:10px;border:1px solid var(--line);border-radius:10px;background:var(--field)}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<header>
+  <h1 id="titulo">Colección para Nuvio</h1>
+  <p id="bajada">Mira cómo queda tu pantalla de inicio, entra con tu cuenta de Nuvio y envía la colección con su badge sin salir de esta página.</p>
+</header>
+
+<main>
+  <section>
+    <div class="demo" id="demo" hidden>Estás viendo una vista de ejemplo. Define <code>COLLECTION_URL</code> en la configuración del HTML para mostrar tu colección real.</div>
+    <div class="bar"><span>Vista previa de la colección</span><span><span id="stats"></span> · <button class="lnk" id="tog" type="button">Cerrar todas</button></span></div>
+    <div id="preview"></div>
+  </section>
+
+  <aside class="panel">
+    <div id="authBox">
+      <h2>Entra a tu cuenta de Nuvio</h2>
+      <p class="sub">Usa el mismo correo y contraseña de la app. Si aún no tienes cuenta, créala aquí.</p>
+      <div class="tabs"><button id="tLogin" class="on" type="button">Iniciar sesión</button><button id="tSign" type="button">Crear cuenta</button></div>
+      <input id="email" type="email" placeholder="Correo" autocomplete="email">
+      <input id="pass" type="password" placeholder="Contraseña" autocomplete="current-password">
+      <button class="btn" id="go" type="button">Iniciar sesión</button>
+    </div>
+
+    <div id="installBox" hidden>
+      <div class="who"><span id="who"></span><button id="out" type="button">Cerrar sesión</button></div>
+      <h2>Instalar en Nuvio</h2>
+      <p class="sub">Elige el perfil y lo que quieres instalar.</p>
+      <div id="profiles"></div>
+      <details class="mk"><summary>¿Prefieres no usar tu perfil principal? Crea uno nuevo</summary>
+        <input id="pname" type="text" placeholder="Nombre del perfil" maxlength="20">
+        <input id="pcolor" type="color" value="#a21cf0" aria-label="Color del perfil">
+        <button class="btn ghost" id="mk" type="button" style="margin:0">Crear perfil</button>
+      </details>
+      <label class="opt"><input type="checkbox" id="optC" checked><span>Colección<small>Carpetas y portadas de esta página</small></span></label>
+      <details class="mk" open><summary>Addons</summary><div id="addonList"></div></details>
+      <p class="sub" style="margin:14px 0 8px">Servicio debrid (opcional)</p>
+      <select id="deb"><option value="">Ninguno</option><option value="torbox">Torbox</option><option value="alldebrid">AllDebrid</option><option value="premiumize">Premiumize</option></select>
+      <input id="debKey" type="password" placeholder="Tu API key" autocomplete="off" hidden>
+      <p class="note" id="debNote" hidden style="margin:-2px 0 12px">Se aplica a Torrentio, Comet y Filtorrent. Tu clave queda dentro del enlace del addon en tu cuenta de Nuvio; esta página no la guarda.</p>
+      <label class="opt"><input type="checkbox" id="optB"><span>CustomBadge Personalizado<small>Marca para ver el enlace y copiarlo</small></span></label>
+      <div id="badgeBox" hidden>
+        <button type="button" class="bx" id="badgeCopy"><span id="badgeHint">Toca para copiar el enlace</span><pre id="badgeJson"></pre></button>
+        <p class="note" style="margin:6px 0 12px">Pégalo en el importador de badges de Nuvio.</p>
+      </div>
+      <select id="mode">
+        <option value="add">Agregar a mis colecciones actuales (recomendado)</option>
+        <option value="replace">Reemplazar todas mis colecciones</option>
+      </select>
+      <button class="btn" id="install" type="button">Instalar en mi Nuvio</button>
+    </div>
+
+    <div id="log" role="status"></div>
+    <p class="note">Tu contraseña va directo a Nuvio y no se guarda. Antes de modificar tu cuenta se descarga un respaldo de tus colecciones actuales.</p>
+  </aside>
+</main>
+<footer>Hecho por <b>NexoraUnk</b></footer>
+
+<script>
+/* ============ CONFIGURACIÓN: edita solo esta parte ============ */
+const CONFIG = {
+  TITULO: "Colección latina para Nuvio",
+  // Enlace RAW al JSON de tu colección (el que ya generas), por ejemplo en tu repo de GitHub:
+  COLLECTION_URL: "https://raw.githubusercontent.com/Nexora-Unk/nexora-nuvio-assets/refs/heads/main/nexora-nuvio-collection-v7.json",
+  // Enlace al JSON del badge pack (tu Gist o tu repo nuvio-badges):
+  BADGE_URL: "https://gist.githubusercontent.com/Nexora-Unk/a257db41a9a03148e73f86a54fc45804/raw/2916087f75801ec8d346f582ac2914f3350da7f4/BadgeNexoraUnk.json",
+  // Addons que se ofrecen al instalar. required:true = siempre se instala y no se puede desmarcar.
+  ADDONS: [
+    {name:"Cinemeta (Requerido)", desc:"Catálogos y metadatos base", url:"stremio://v3-cinemeta.strem.io/manifest.json"},
+    {name:"Torrentio", desc:"Streams en latino y español", debrid:"torrentio", url:"https://torrentio.strem.fun/language=latino,spanish|qualityfilter=unknown,cam,scr,other,480p/manifest.json"},
+    {name:"Comet", desc:"Streams con prioridad en latino", debrid:"comet", url:"https://comet.elfhosted.com/eyJtYXhSZXN1bHRzUGVyUmVzb2x1dGlvbiI6MCwibWF4U2l6ZSI6MCwiY2FjaGVkT25seSI6ZmFsc2UsInNvcnRDYWNoZWRVbmNhY2hlZFRvZ2V0aGVyIjpmYWxzZSwicmVtb3ZlVHJhc2giOnRydWUsInJlc3VsdEZvcm1hdCI6WyJhbGwiXSwiZGVicmlkU2VydmljZXMiOltdLCJlbmFibGVUb3JyZW50IjpmYWxzZSwiZGVkdXBsaWNhdGVTdHJlYW1zIjpmYWxzZSwic2NyYXBlRGVicmlkQWNjb3VudFRvcnJlbnRzIjpmYWxzZSwiZGVicmlkU3RyZWFtUHJveHlQYXNzd29yZCI6IiIsImxhbmd1YWdlcyI6eyJyZXF1aXJlZCI6WyJlbiIsImVzIiwibGEiXSwiYWxsb3dlZCI6WyJlbiIsImVzIiwibGEiXSwiZXhjbHVkZSI6WyJhciIsImJnIiwiYm4iLCJjcyIsImRhIiwiZGUiLCJlbCIsImV0IiwiZmEiLCJmaSIsImZyIiwiZ3UiLCJoZSIsImhpIiwiaHIiLCJodSIsImlkIiwiaXQiLCJrbiIsImx0IiwibHYiLCJtbCIsIm1yIiwibXMiLCJubCIsIm5vIiwicGEiLCJwbCIsInB0Iiwicm8iLCJydSIsInNrIiwic2wiLCJzciIsInN2IiwidGEiLCJ0ZSIsInRoIiwidHIiLCJ1ayIsInZpIiwiemgiXSwicHJlZmVycmVkIjpbImxhIl19LCJyZXNvbHV0aW9ucyI6eyJyNTc2cCI6ZmFsc2UsInI0ODBwIjpmYWxzZSwicjM2MHAiOmZhbHNlLCJyMjQwcCI6ZmFsc2UsInVua25vd24iOmZhbHNlfSwib3B0aW9ucyI6eyJyZW1vdmVfcmFua3NfdW5kZXIiOi0xMDAwMDAwMDAwMCwiYWxsb3dfZW5nbGlzaF9pbl9sYW5ndWFnZXMiOmZhbHNlLCJyZW1vdmVfdW5rbm93bl9sYW5ndWFnZXMiOmZhbHNlfX0=/manifest.json"},
+    {name:"DeepFlix", desc:"Addon adicional", url:"https://mg.homelabx.qzz.io/manifest.json"},
+    {name:"AddonLatam", desc:"Addon adicional", url:"https://addonlatam.duckdns.org/A0wrYOb7z4LiG5vrhQwcb-g4/manifest.json"},
+    {name:"AnimES", desc:"Anime en español", url:"https://pigamer37.alwaysdata.net/onAirCatalogs=animeav1%2Chenaojara%2Ctioanime%2Cjkanime/manifest.json"},
+    {name:"Filtorrent", desc:"Streams filtrados: 4K/1080p/720p, REMUX y BluRay", debrid:"filtorrent", url:"https://ce8c71dcef3b-filtorrent.baby-beamup.club/%7B%22required%22%3A%7B%22resolution%22%3A%5B%222160p%22%2C%221080p%22%2C%22720p%22%5D%2C%22codec%22%3A%5B%22AV1%22%2C%22HEVC%22%2C%22AVC%22%5D%2C%22range%22%3A%5B%22DV%22%2C%22HDR%22%5D%2C%22source%22%3A%5B%22REMUX%22%2C%22BluRay%22%5D%7D%2C%22preferred%22%3A%7B%22resolution%22%3A%5B%222160p%22%2C%221080p%22%2C%22720p%22%5D%2C%22codec%22%3A%5B%22AV1%22%2C%22HEVC%22%2C%22AVC%22%5D%2C%22range%22%3A%5B%22DV%22%2C%22HDR%22%5D%2C%22source%22%3A%5B%22REMUX%22%2C%22BluRay%22%2C%22WEB%22%5D%7D%2C%22sort%22%3A%5B%7B%22by%22%3A%22seeders%22%2C%22dir%22%3A%22desc%22%7D%2C%7B%22by%22%3A%22quality%22%2C%22dir%22%3A%22desc%22%7D%2C%7B%22by%22%3A%22size%22%2C%22dir%22%3A%22desc%22%7D%5D%2C%22torrentioUrl%22%3A%22https%3A%2F%2Ftorrentio.strem.fun%2Flanguage%3Dlatino%2Cspanish%7Cqualityfilter%3Dunknown%2Ccam%2Cscr%2Cother%2C480p%2F%22%2C%22torrentsdbUrl%22%3A%22stremio%3A%2F%2Ftorrentsdb.com%2FeyJzb3J0Ijoic2VlZGVycyIsImxhbmd1YWdlIjpbImxhdGlubyIsInNwYW5pc2giXSwicXVhbGl0eWZpbHRlciI6WyJ1bmtub3duIiwiY2FtIiwic2NyIiwib3RoZXIiXX0%3D%2F%22%7D/manifest.json"},
+    {name:"Peerflix", desc:"Streams de Peerflix", url:"https://addon.peerflix.mov/enc_BAh_qNi0Kra9W5wbHhgNf6h1WkV-ds6KYkNtTMEFDwzYezMl2rhB1sZpSGkaQg_fMBt3e4X06PR2y0g6EmK3-MVhnTZ1Z9XL-R9mBt3YbBPVKG1ne90PPBgWmXcEbmlNmWHLDuZf70TS7g3Cx8urHB9ObcKrI_9spQ-8POPNCWkCXwb2q5uvuGLKDDYItWggmxjNsEHFicjzCOFwe-8fKSt81k1FlCn_F1FjKX_sjNrdiF8CqGJwXUnSb9OZOh7EST8-p5J2DU8ht4pYUCFHBB6D-DbNJgL1dYCYOe3No_k/manifest.json"},
+    {name:"SubSense", desc:"Subtítulos en español e inglés", url:"https://subsense.nepiraw.com/4o019gug-%7B%22languages%22%3A%5B%22es%22%2C%22en%22%5D%2C%22maxSubtitles%22%3A10%7D/manifest.json"}
+  ],
+  // No cambies estos dos (son la API pública oficial de Nuvio):
+  API: "https://api.nuvio.tv",
+  KEY: "sb_publishable_1Clq8rlTVACkdcZuqr6_AD__xUUC_EN"
+};
+/* ================================================================ */
+
+const $ = s => document.querySelector(s);
+const el = (t, c, x) => { const e = document.createElement(t); if (c) e.className = c; if (x != null) e.textContent = x; return e; };
+const fixUrl = u => u.trim().replace(/^stremio:\/\//i, "https://");
+const debridUrl = (a, svc, key) => {
+  const u = fixUrl(a.url);
+  if (a.debrid === "torrentio") return u.replace(/\/manifest\.json$/, "|" + svc + "=" + encodeURIComponent(key) + "/manifest.json");
+  if (a.debrid === "comet") {
+    const m = u.match(/^(https?:\/\/[^/]+\/)([^/]+)(\/manifest\.json)$/);
+    const cfg = JSON.parse(atob(m[2]));
+    cfg.debridServices = [{ service: svc, apiKey: key }];
+    return m[1] + btoa(JSON.stringify(cfg)) + m[3];
+  }
+  if (a.debrid === "filtorrent") {
+    const m = u.match(/^(https?:\/\/[^/]+\/)([^/]+)(\/manifest\.json)$/);
+    const cfg = JSON.parse(decodeURIComponent(m[2]));
+    cfg.torrentioUrl = cfg.torrentioUrl.replace(/\/?$/, "|" + svc + "=" + encodeURIComponent(key) + "/");
+    return m[1] + encodeURIComponent(JSON.stringify(cfg)) + m[3];
+  }
+  return u;
+};
+const isUrl = u => /^https?:\/\//i.test(u || "");
+const DEMO = [
+  {id:"demo-streaming",title:"Servicios de streaming",folders:[{title:"Netflix",coverEmoji:"🎬",tileShape:"LANDSCAPE"},{title:"Disney+",coverEmoji:"✨",tileShape:"LANDSCAPE"},{title:"Prime Video",coverEmoji:"📺",tileShape:"LANDSCAPE"}]},
+  {id:"demo-generos",title:"Géneros",folders:[{title:"Acción",coverEmoji:"💥",tileShape:"POSTER"},{title:"Comedia",coverEmoji:"😂",tileShape:"POSTER"},{title:"Terror",coverEmoji:"👻",tileShape:"POSTER"}]}
+];
+let cols = [], isDemo = false, session = null, mode = "login";
+
+function log(m, t) { const l = $("#log"); l.textContent = m; l.className = t || ""; }
+
+async function api(path, body, opt = {}) {
+  const h = { apikey: CONFIG.KEY, "Content-Type": "application/json" };
+  if (session && !opt.anon) h.Authorization = "Bearer " + session.access_token;
+  const r = await fetch(CONFIG.API + path, { method: opt.method || "POST", headers: h, body: body === undefined ? undefined : JSON.stringify(body) });
+  const t = await r.text(); let j = null; try { j = t ? JSON.parse(t) : null; } catch (e) {}
+  if (!r.ok) {
+    const e = new Error(r.status === 401 ? "La sesión venció. Inicia sesión otra vez." : ((j && (j.msg || j.error_description || j.message)) || "Error " + r.status));
+    e.status = r.status; throw e;
+  }
+  return j;
+}
+
+function download(name, obj) {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(obj, null, 2)], { type: "application/json" }));
+  a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+}
+
+/* ---------- Vista previa ---------- */
+function render() {
+  const box = $("#preview"); box.replaceChildren();
+  cols.forEach(c => {
+    const s = el("details", "col"); s.open = true;
+    const sm = el("summary", "", c.title || "Colección"); sm.append(el("span", "cnt", "(" + (c.folders || []).length + ")")); s.append(sm);
+    const g = el("div", "grid");
+    (c.folders || []).forEach(f => {
+      const t = el("div", "tile " + String(f.tileShape || "LANDSCAPE").toLowerCase());
+      const emo = () => { t.querySelector("img")?.remove(); if (!t.querySelector(".emo")) t.prepend(el("span", "emo", f.coverEmoji || "🎬")); };
+      if (isUrl(f.coverImageUrl)) { const i = new Image(); i.loading = "lazy"; i.alt = f.title || ""; i.src = f.coverImageUrl; i.onerror = emo; t.append(i); } else emo();
+      if (!f.hideTitle && !isUrl(f.coverImageUrl)) t.append(el("b", "", f.title || ""));
+      g.append(t);
+    });
+    s.append(g); box.append(s);
+  });
+  const n = cols.reduce((a, c) => a + (c.folders || []).length, 0);
+  $("#stats").textContent = cols.length + " colecciones, " + n + " carpetas";
+}
+
+async function loadCollection() {
+  try {
+    if (!CONFIG.COLLECTION_URL) throw 0;
+    const j = await (await fetch(CONFIG.COLLECTION_URL, { cache: "no-store" })).json();
+    cols = Array.isArray(j) ? j : (j.collections || j.collections_json || []);
+    if (!cols.length) throw 0;
+  } catch (e) { cols = DEMO; isDemo = true; $("#demo").hidden = false; }
+  render();
+}
+
+/* ---------- Cuenta ---------- */
+function setMode(m) {
+  mode = m;
+  $("#tLogin").classList.toggle("on", m === "login"); $("#tSign").classList.toggle("on", m === "sign");
+  $("#go").textContent = m === "login" ? "Iniciar sesión" : "Crear cuenta";
+  $("#pass").autocomplete = m === "login" ? "current-password" : "new-password";
+}
+
+async function auth() {
+  const email = $("#email").value.trim(), password = $("#pass").value;
+  if (!email || password.length < 6) return log("Escribe tu correo y una contraseña de al menos 6 caracteres.", "err");
+  $("#go").disabled = true;
+  try {
+    log("Conectando con Nuvio…");
+    const j = await api(mode === "login" ? "/auth/v1/token?grant_type=password" : "/auth/v1/signup", { email, password }, { anon: 1 });
+    if (!j || !j.access_token) { setMode("login"); return log("Cuenta creada. Revisa tu correo para confirmarla y después inicia sesión.", "ok"); }
+    session = j; $("#pass").value = ""; await loadProfiles();
+  } catch (e) { log(e.message, "err"); }
+  $("#go").disabled = false;
+}
+
+let profs = [];
+async function loadProfiles(sel) {
+  let p = await api("/rest/v1/rpc/sync_pull_profiles", {});
+  if (!p || !p.length) { // cuenta nueva sin perfiles: se crea el principal (no borra nada porque no hay nada)
+    await api("/rest/v1/rpc/sync_push_profiles", { p_client_max_profiles: 6, p_profiles: [{ profile_index: 1, name: "Principal", avatar_color_hex: "#8B5CF6" }] });
+    p = await api("/rest/v1/rpc/sync_pull_profiles", {});
+  }
+  $("#authBox").hidden = true; $("#installBox").hidden = false;
+  $("#who").textContent = (session.user && session.user.email) || "";
+  const al = $("#addonList"); al.replaceChildren();
+  CONFIG.ADDONS.forEach((a, i) => {
+    const l = el("label", "opt"), c = document.createElement("input");
+    c.type = "checkbox"; c.checked = true; c.disabled = !!a.required; c.dataset.i = i;
+    const sp = el("span", "", a.name + (a.required ? " (Requerido)" : "")); sp.append(el("small", "", a.desc || ""));
+    l.append(c, sp); al.append(l);
+  });
+  const box = $("#profiles"); box.replaceChildren();
+  p.sort((a, b) => a.profile_index - b.profile_index); profs = p;
+  p.forEach(x => {
+    const l = el("label", "pf" + (x.pin_enabled ? " lock" : ""));
+    const r = document.createElement("input"); r.type = "radio"; r.name = "pf"; r.value = x.profile_index; r.disabled = !!x.pin_enabled;
+    l.append(r, el("span", "", (x.pin_enabled ? "🔒 " : "") + x.name + (x.pin_enabled ? " (protegido con PIN)" : "")));
+    box.append(l);
+  });
+  const f = box.querySelector("input[value='" + sel + "']:not(:disabled)") || box.querySelector("input:not(:disabled)"); if (f) f.checked = true;
+  if (!sel) log("Sesión iniciada. Elige el perfil donde instalar.", "ok");
+}
+
+async function createProfile() {
+  const name = $("#pname").value.trim();
+  if (!name) return log("Escribe un nombre para el perfil.", "err");
+  const free = [1, 2, 3, 4, 5, 6].find(i => !profs.some(p => p.profile_index === i));
+  if (!free) return log("Ya tienes 6 perfiles, que es el máximo de Nuvio.", "err");
+  $("#mk").disabled = true;
+  try {
+    // la API reemplaza la lista completa: se reenvían los perfiles existentes tal cual
+    const keep = profs.map(p => {
+      const o = { profile_index: p.profile_index, name: p.name, avatar_color_hex: p.avatar_color_hex, uses_primary_addons: !!p.uses_primary_addons };
+      if (p.avatar_id) o.avatar_id = p.avatar_id; if (p.avatar_url) o.avatar_url = p.avatar_url; return o;
+    });
+    keep.push({ profile_index: free, name, avatar_color_hex: $("#pcolor").value.toUpperCase(), uses_primary_addons: false });
+    await api("/rest/v1/rpc/sync_push_profiles", { p_client_max_profiles: 6, p_profiles: keep });
+    $("#pname").value = "";
+    await loadProfiles(free);
+    log("Perfil «" + name + "» creado y seleccionado. Ya puedes instalar en él.", "ok");
+  } catch (e) { log(e.message, "err"); }
+  $("#mk").disabled = false;
+}
+
+async function logout() {
+  try { await api("/auth/v1/logout", {}); } catch (e) {}
+  session = null; $("#installBox").hidden = true; $("#authBox").hidden = false; log("Sesión cerrada.");
+}
+
+/* ---------- Instalar ---------- */
+async function install() {
+  const r = document.querySelector("input[name=pf]:checked");
+  if (!r) return log("Elige un perfil.", "err");
+  const pid = +r.value, wantC = $("#optC").checked, chosen = [...document.querySelectorAll("#addonList input")].filter(c => c.checked).map(c => CONFIG.ADDONS[+c.dataset.i]), wantA = chosen.length > 0, replace = $("#mode").value === "replace";
+  
+  if (wantC && isDemo) return log("Falta tu colección real: define COLLECTION_URL en la configuración del HTML.", "err");
+  const svc = $("#deb").value, dkey = $("#debKey").value.trim();
+  if (svc && !dkey) return log("Pega la API key de tu servicio debrid o elige Ninguno.", "err");
+  $("#install").disabled = true;
+  try {
+    let msg = "";
+    if (wantA) {
+      log("Revisando tus addons…");
+      const cur = await api("/rest/v1/addons?select=*&profile_id=eq." + pid + "&order=sort_order", undefined, { method: "GET" });
+      const key = u => fixUrl(u).toLowerCase().replace(/\/manifest\.json$/, "").replace(/\/$/, "");
+      const have = new Set(cur.map(a => key(a.url)));
+      const list = cur.map((a, i) => ({ url: a.url, name: a.name, enabled: a.enabled, sort_order: i }));
+      let added = 0, changed = 0;
+      chosen.forEach(a => {
+        const useDeb = svc && a.debrid, url = useDeb ? debridUrl(a, svc, dkey) : fixUrl(a.url), host = new URL(fixUrl(a.url)).host;
+        const i = useDeb ? list.findIndex(x => { try { return new URL(fixUrl(x.url)).host === host; } catch (e) { return false; } }) : -1;
+        if (i >= 0) { list[i].url = url; changed++; }
+        else if (!have.has(key(a.url))) { list.push({ url, name: a.name, enabled: true, sort_order: list.length }); added++; }
+      });
+      if (added || changed) { download("respaldo-addons-perfil" + pid + ".json", cur); await api("/rest/v1/rpc/sync_push_addons", { p_profile_id: pid, p_addons: list }); }
+      msg += "Addons: " + (added || changed ? added + " agregados, " + changed + " actualizados con " + (svc || "tu configuración") : "ya estaban instalados") + ".\n";
+    }
+    if (wantC) {
+      log("Leyendo tus colecciones actuales…");
+      const cur = await api("/rest/v1/rpc/sync_pull_collections", { p_profile_id: pid });
+      const old = (cur && cur[0] && cur[0].collections_json) || [];
+      if (replace && old.length && !confirm("Se van a reemplazar tus " + old.length + " colecciones actuales (se descarga un respaldo). ¿Continuar?")) { $("#install").disabled = false; return log("Cancelado."); }
+      if (old.length) download("respaldo-colecciones-perfil" + pid + ".json", old);
+      const ids = new Set(cols.map(c => c.id));
+      const out = replace ? cols : old.filter(c => !ids.has(c.id)).concat(cols);
+      log("Instalando colección…");
+      await api("/rest/v1/rpc/sync_push_collections", { p_profile_id: pid, p_collections_json: out });
+      msg += "Colección instalada (" + cols.length + ").\n";
+    }
+    log(msg + "Abre o actualiza Nuvio para ver los cambios.", "ok");
+  } catch (e) { log(e.message, "err"); }
+  $("#install").disabled = false;
+}
+
+/* ---------- Badge ---------- */
+let badgeText = "";
+function badgeToggle() {
+  const on = $("#optB").checked; $("#badgeBox").hidden = !on; if (!on) return;
+  badgeText = CONFIG.BADGE_URL;
+  $("#badgeJson").textContent = badgeText || "Falta definir BADGE_URL en la configuración del HTML.";
+}
+async function badgeCopy() {
+  if (!badgeText) return;
+  try { await navigator.clipboard.writeText(badgeText); }
+  catch (e) { const r = document.createRange(); r.selectNodeContents($("#badgeJson")); const g = getSelection(); g.removeAllRanges(); g.addRange(r); document.execCommand("copy"); }
+  $("#badgeHint").textContent = "¡Copiado!"; setTimeout(() => { $("#badgeHint").textContent = "Toca para copiar el enlace"; }, 1800);
+}
+
+/* ---------- Eventos ---------- */
+document.title = CONFIG.TITULO;
+$("#titulo").textContent = CONFIG.TITULO;
+$("#tLogin").onclick = () => setMode("login");
+$("#tSign").onclick = () => setMode("sign");
+$("#go").onclick = auth;
+$("#pass").onkeydown = e => { if (e.key === "Enter") auth(); };
+$("#out").onclick = logout;
+$("#mk").onclick = createProfile;
+$("#deb").onchange = () => { $("#debKey").hidden = $("#debNote").hidden = !$("#deb").value; };
+$("#install").onclick = install;
+$("#optB").onchange = badgeToggle;
+$("#badgeCopy").onclick = badgeCopy;
+$("#tog").onclick = () => { const ds = [...document.querySelectorAll("#preview details")], open = ds.some(d => d.open); ds.forEach(d => { d.open = !open; }); $("#tog").textContent = open ? "Abrir todas" : "Cerrar todas"; };
+loadCollection();
+</script>
+</body>
+</html>
