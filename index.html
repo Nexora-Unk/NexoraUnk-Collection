@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#03040a">
 <title>Nexora · Colección para Nuvio</title>
 <style>
 :root{/* COLORES del logo de Nexora: cambia aquí la paleta */--bg:#03040a;--panel:#0a0c18;--tile:#0f1226;--field:#070914;--line:#1f2446;--tx:#f4f6ff;--mut:#8f96b8;--c1:#18d6ee;--c2:#b052f5;--grad:linear-gradient(120deg,#18d6ee,#2f7cf5 42%,#a21cf0 78%,#d726e8);--soft:color-mix(in srgb,var(--c2) 16%,transparent);--ok:#4ade80;--err:#f87171}
@@ -77,6 +78,53 @@ input:focus,select:focus,button:focus-visible{outline:2px solid var(--c1);outlin
 .who button{background:none;border:0;color:var(--c1);cursor:pointer;font:inherit}
 .mk{margin:0 0 14px}.mk summary{cursor:pointer;color:var(--c1);font-size:.9rem;margin-bottom:10px}
 .mk input[type=color]{width:100%;height:42px;padding:2px;margin-bottom:10px;border:1px solid var(--line);border-radius:10px;background:var(--field)}
+/* ===== Mejoras visuales y responsive ===== */
+html{-webkit-text-size-adjust:100%;color-scheme:dark;scroll-behavior:smooth}
+img,svg{max-width:100%}
+::selection{background:#a050f066}
+main>section{min-width:0}
+.steps{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0;padding:0;list-style:none;counter-reset:s}
+.steps li{counter-increment:s;display:flex;align-items:center;gap:8px;padding:6px 14px 6px 8px;border:1px solid var(--line);border-radius:999px;background:#0a0c1899;font-size:.85rem;color:var(--mut)}
+.steps li::before{content:counter(s);display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--grad);color:#07070d;font-weight:800;font-size:.75rem}
+.col{animation:up .45s both}
+.col>summary{padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:linear-gradient(180deg,#0f122699,#0a0c1899);transition:border-color .2s}
+.col>summary:hover{border-color:var(--c2)}
+.col[open]>summary{margin-bottom:14px}
+.cnt{margin-left:auto;padding:2px 10px;border-radius:999px;background:var(--soft);color:var(--tx);font-size:.78rem}
+.tile{transition:transform .2s,border-color .2s,box-shadow .2s}
+.tile:hover{transform:translateY(-3px);border-color:var(--c1);box-shadow:0 10px 26px #18d6ee26,0 6px 22px #a21cf026}
+.tile img{transition:transform .35s}.tile:hover img{transform:scale(1.06)}
+.sk{background:linear-gradient(100deg,var(--tile) 30%,#1a1f40 50%,var(--tile) 70%);background-size:200% 100%;animation:sh 1.3s linear infinite}
+.btn{transition:transform .15s,filter .15s;box-shadow:0 8px 24px #a21cf033}
+.btn:hover:not(:disabled){filter:brightness(1.08);transform:translateY(-1px)}
+.btn:active:not(:disabled){transform:scale(.985)}
+.btn.ghost{box-shadow:none}
+.opt:hover,.pf:not(.lock):hover{border-color:var(--c2)}
+.opt:has(input:checked){border-color:var(--c2);background:var(--soft)}
+input[type=checkbox],input[type=radio]{accent-color:var(--c2);width:18px;height:18px;flex:none}
+#log:not(:empty){padding:10px 12px;border-radius:10px;background:var(--field);border:1px solid var(--line)}
+.cover{box-shadow:0 14px 40px #6a2cf01f}.cover:hover{box-shadow:0 14px 44px #a21cf038}
+@keyframes up{from{opacity:0;transform:translateY(10px)}}
+@keyframes sh{to{background-position:-200% 0}}
+@media(max-width:900px){
+  main{display:flex;flex-direction:column;padding:0 16px 40px;gap:22px}
+  .panel{order:-1;position:static;padding:20px 16px 22px}
+  header{padding:26px 16px 20px}
+  .top div{padding:12px 16px}
+  footer{padding:22px 16px 34px}
+}
+@media(max-width:560px){
+  .grid{grid-template-columns:repeat(auto-fill,minmax(128px,1fr));gap:10px}
+  .tabs button{padding:12px}
+  .opt,.pf{padding:12px}
+  .cover{padding:26px 14px 16px;border-radius:18px}
+  .cv-row{padding:12px 14px;border-radius:16px}
+  .cv-tag{right:12px;font-size:.66rem}
+  .brand b{font-size:1.6rem}
+  footer{font-size:.82rem}
+  .steps li{font-size:.8rem}
+}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -87,13 +135,14 @@ input:focus,select:focus,button:focus-visible{outline:2px solid var(--c1);outlin
 <header>
   <h1 id="titulo">Colección para Nuvio</h1>
   <p id="bajada">Mira cómo queda tu pantalla de inicio, entra con tu cuenta de Nuvio y envía la colección con su badge sin salir de esta página.</p>
+  <ol class="steps"><li>Inicia sesión</li><li>Elige tu perfil</li><li>Instala colección y addons</li></ol>
 </header>
 
 <main>
   <section>
     <div class="demo" id="demo" hidden>Estás viendo una vista de ejemplo. Define <code>COLLECTION_URL</code> en la configuración del HTML para mostrar tu colección real.</div>
     <div class="bar"><span>Vista previa de la colección</span><span><span id="stats"></span> · <button class="lnk" id="tog" type="button">Cerrar todas</button></span></div>
-    <div id="preview"></div>
+    <div id="preview"><div class="grid"><div class="tile landscape sk"></div><div class="tile landscape sk"></div><div class="tile landscape sk"></div><div class="tile landscape sk"></div><div class="tile landscape sk"></div><div class="tile landscape sk"></div></div></div>
     <button type="button" class="cover" id="cover" aria-label="Copiar el custom badge">
       <span class="cv-tag" id="cvTag">Toca para copiar el custom badge</span>
       <span class="cv-row cv-before"><b>ANTES</b><code>Movie.2160p.UHD.BluRay.REMUX.HEVC.HDR10+.Atmos.7.1</code></span>
@@ -142,7 +191,7 @@ input:focus,select:focus,button:focus-visible{outline:2px solid var(--c1);outlin
         <p class="note" style="margin:6px 0 12px">Pégalo en el importador de badges de Nuvio.</p>
       </div>
       <select id="mode">
-        <option value="add">Agregar a mis colecciones actuales (recomendado)</option>
+        <option value="add">Agregar a las mías (recomendado)</option>
         <option value="replace">Reemplazar todas mis colecciones</option>
       </select>
       <button class="btn" id="install" type="button">Instalar en mi Nuvio</button>
@@ -174,7 +223,7 @@ const CONFIG = {
   ADDONS: [
     {name:"Cinemeta (Requerido)", desc:"Catálogos y metadatos base", url:"stremio://v3-cinemeta.strem.io/manifest.json"},
     {name:"Torrentio", desc:"Streams en latino y español", debrid:"torrentio", url:"https://torrentio.strem.fun/language=latino,spanish|qualityfilter=unknown,cam,scr,other,480p/manifest.json"},
-    {name:"Comet", desc:"Streams con prioridad en latino", debrid:"comet", url:"https://cometfortheweebs.midnightignite.me/eyJtYXhSZXN1bHRzUGVyUmVzb2x1dGlvbiI6MCwibWF4U2l6ZSI6MCwiY2FjaGVkT25seSI6ZmFsc2UsInNvcnRDYWNoZWRVbmNhY2hlZFRvZ2V0aGVyIjpmYWxzZSwicmVtb3ZlVHJhc2giOnRydWUsInJlc3VsdEZvcm1hdCI6WyJhbGwiXSwiZGVicmlkU2VydmljZXMiOltdLCJlbmFibGVUb3JyZW50Ijp0cnVlLCJkZWR1cGxpY2F0ZVN0cmVhbXMiOmZhbHNlLCJzY3JhcGVEZWJyaWRBY2NvdW50VG9ycmVudHMiOmZhbHNlLCJkZWJyaWRTdHJlYW1Qcm94eVBhc3N3b3JkIjoiIiwibGFuZ3VhZ2VzIjp7InJlcXVpcmVkIjpbImVuIiwiZXMiLCJsYSJdLCJhbGxvd2VkIjpbImVuIiwiZXMiLCJsYSJdLCJleGNsdWRlIjpbImFyIiwiYmciLCJibiIsImNzIiwiZGEiLCJkZSIsImVsIiwiZXQiLCJmYSIsImZpIiwiZnIiLCJndSIsImhlIiwiaGkiLCJociIsImh1IiwiaWQiLCJpdCIsImtuIiwibHQiLCJsdiIsIm1sIiwibXIiLCJtcyIsIm5sIiwibm8iLCJwYSIsInBsIiwicHQiLCJybyIsInJ1Iiwic2siLCJzbCIsInNyIiwic3YiLCJ0YSIsInRlIiwidGgiLCJ0ciIsInVrIiwidmkiXSwicHJlZmVycmVkIjpbImVzIiwibGEiXX0sInJlc29sdXRpb25zIjp7InI0ODBwIjpmYWxzZSwicjM2MHAiOmZhbHNlLCJyMjQwcCI6ZmFsc2UsInVua25vd24iOmZhbHNlfSwib3B0aW9ucyI6eyJyZW1vdmVfcmFua3NfdW5kZXIiOi0xMDAwMDAwMDAwMCwiYWxsb3dfZW5nbGlzaF9pbl9sYW5ndWFnZXMiOmZhbHNlLCJyZW1vdmVfdW5rbm93bl9sYW5ndWFnZXMiOmZhbHNlfX0=/manifest.json"},
+    {name:"Comet", desc:"Streams con prioridad en latino", debrid:"comet", url:"https://comet.elfhosted.com/eyJtYXhSZXN1bHRzUGVyUmVzb2x1dGlvbiI6MCwibWF4U2l6ZSI6MCwiY2FjaGVkT25seSI6ZmFsc2UsInNvcnRDYWNoZWRVbmNhY2hlZFRvZ2V0aGVyIjpmYWxzZSwicmVtb3ZlVHJhc2giOnRydWUsInJlc3VsdEZvcm1hdCI6WyJhbGwiXSwiZGVicmlkU2VydmljZXMiOltdLCJlbmFibGVUb3JyZW50IjpmYWxzZSwiZGVkdXBsaWNhdGVTdHJlYW1zIjpmYWxzZSwic2NyYXBlRGVicmlkQWNjb3VudFRvcnJlbnRzIjpmYWxzZSwiZGVicmlkU3RyZWFtUHJveHlQYXNzd29yZCI6IiIsImxhbmd1YWdlcyI6eyJyZXF1aXJlZCI6WyJlbiIsImVzIiwibGEiXSwiYWxsb3dlZCI6WyJlbiIsImVzIiwibGEiXSwiZXhjbHVkZSI6WyJhciIsImJnIiwiYm4iLCJjcyIsImRhIiwiZGUiLCJlbCIsImV0IiwiZmEiLCJmaSIsImZyIiwiZ3UiLCJoZSIsImhpIiwiaHIiLCJodSIsImlkIiwiaXQiLCJrbiIsImx0IiwibHYiLCJtbCIsIm1yIiwibXMiLCJubCIsIm5vIiwicGEiLCJwbCIsInB0Iiwicm8iLCJydSIsInNrIiwic2wiLCJzciIsInN2IiwidGEiLCJ0ZSIsInRoIiwidHIiLCJ1ayIsInZpIiwiemgiXSwicHJlZmVycmVkIjpbImxhIl19LCJyZXNvbHV0aW9ucyI6eyJyNTc2cCI6ZmFsc2UsInI0ODBwIjpmYWxzZSwicjM2MHAiOmZhbHNlLCJyMjQwcCI6ZmFsc2UsInVua25vd24iOmZhbHNlfSwib3B0aW9ucyI6eyJyZW1vdmVfcmFua3NfdW5kZXIiOi0xMDAwMDAwMDAwMCwiYWxsb3dfZW5nbGlzaF9pbl9sYW5ndWFnZXMiOmZhbHNlLCJyZW1vdmVfdW5rbm93bl9sYW5ndWFnZXMiOmZhbHNlfX0=/manifest.json"},
     {name:"DeepFlix", desc:"Addon adicional", url:"https://mg.homelabx.qzz.io/manifest.json"},
     {name:"AddonLatam", desc:"Addon adicional", url:"https://addonlatam.duckdns.org/A0wrYOb7z4LiG5vrhQwcb-g4/manifest.json"},
     {name:"AnimES", desc:"Anime en español", url:"https://pigamer37.alwaysdata.net/onAirCatalogs=animeav1%2Chenaojara%2Ctioanime%2Cjkanime/manifest.json"},
