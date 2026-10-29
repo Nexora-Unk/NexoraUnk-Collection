@@ -257,6 +257,32 @@ const debridUrl = (a, svc, key) => {
   }
   return u;
 };
+const DEB_RE = /\|(torbox|alldebrid|premiumize)=[^|/]*/g;
+// Huella de un addon SIN la parte de debrid: sirve para reconocer "el mismo addon" aunque tenga o no tenga clave.
+function canonUrl(a, url) {
+  const u = fixUrl(url);
+  try {
+    const m = u.match(/^(https?:\/\/[^/]+\/)([^/]+)(\/manifest\.json)$/i);
+    if (a.debrid === "torrentio") return u.toLowerCase().replace(DEB_RE, "");
+    if (a.debrid === "comet" && m) { const c = JSON.parse(atob(m[2])); delete c.debridServices; return m[1].toLowerCase() + JSON.stringify(c); }
+    if (a.debrid === "filtorrent" && m) { const c = JSON.parse(decodeURIComponent(m[2])); c.torrentioUrl = String(c.torrentioUrl || "").replace(DEB_RE, ""); return m[1].toLowerCase() + JSON.stringify(c); }
+  } catch (e) {}
+  return u.toLowerCase().replace(/\/manifest\.json$/, "").replace(/\/$/, "");
+}
+// Deja cada addon elegido con EXACTAMENTE la configuración pedida (con o sin debrid) y sin duplicados.
+function mergeAddons(cur, chosen, svc, dkey) {
+  let list = cur.map(a => ({ url: a.url, name: a.name, enabled: a.enabled }));
+  let added = 0, changed = 0;
+  chosen.forEach(a => {
+    const url = svc && a.debrid ? debridUrl(a, svc, dkey) : fixUrl(a.url), canon = canonUrl(a, a.url);
+    const idx = list.map((x, i) => canonUrl(a, x.url) === canon ? i : -1).filter(i => i >= 0);
+    if (!idx.length) { list.push({ url, name: a.name, enabled: true }); added++; return; }
+    if (!a.debrid) return;
+    if (fixUrl(list[idx[0]].url) !== url) { list[idx[0]].url = url; changed++; }
+    if (idx.length > 1) { const extra = idx.slice(1); list = list.filter((_, i) => !extra.includes(i)); changed++; }
+  });
+  return { list: list.map((x, i) => ({ ...x, sort_order: i })), added, changed };
+}
 const isUrl = u => /^https?:\/\//i.test(u || "");
 const DEMO = [
   {id:"demo-streaming",title:"Servicios de streaming",folders:[{title:"Netflix",coverEmoji:"🎬",tileShape:"LANDSCAPE"},{title:"Disney+",coverEmoji:"✨",tileShape:"LANDSCAPE"},{title:"Prime Video",coverEmoji:"📺",tileShape:"LANDSCAPE"}]},
@@ -404,18 +430,9 @@ async function install() {
     if (wantA) {
       log("Revisando tus addons…");
       const cur = await api("/rest/v1/addons?select=*&profile_id=eq." + pid + "&order=sort_order", undefined, { method: "GET" });
-      const key = u => fixUrl(u).toLowerCase().replace(/\/manifest\.json$/, "").replace(/\/$/, "");
-      const have = new Set(cur.map(a => key(a.url)));
-      const list = cur.map((a, i) => ({ url: a.url, name: a.name, enabled: a.enabled, sort_order: i }));
-      let added = 0, changed = 0;
-      chosen.forEach(a => {
-        const useDeb = svc && a.debrid, url = useDeb ? debridUrl(a, svc, dkey) : fixUrl(a.url), host = new URL(fixUrl(a.url)).host;
-        const i = useDeb ? list.findIndex(x => { try { return new URL(fixUrl(x.url)).host === host; } catch (e) { return false; } }) : -1;
-        if (i >= 0) { list[i].url = url; changed++; }
-        else if (!have.has(key(a.url))) { list.push({ url, name: a.name, enabled: true, sort_order: list.length }); added++; }
-      });
+      const { list, added, changed } = mergeAddons(cur, chosen, svc, dkey);
       if (added || changed) { download("respaldo-addons-perfil" + pid + ".json", cur); await api("/rest/v1/rpc/sync_push_addons", { p_profile_id: pid, p_addons: list }); }
-      msg += "Addons: " + (added || changed ? added + " agregados, " + changed + " actualizados con " + (svc || "tu configuración") : "ya estaban instalados") + ".\n";
+      msg += "Addons: " + (added || changed ? added + " agregados, " + changed + " actualizados" + (svc ? " con " + svc : " (sin debrid)") : "ya estaban instalados") + ".\n";
     }
     if (wantC) {
       log("Leyendo tus colecciones actuales…");
