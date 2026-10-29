@@ -184,7 +184,7 @@ input[type=checkbox],input[type=radio]{accent-color:var(--c2);width:18px;height:
       <p class="sub" style="margin:14px 0 8px">Servicio debrid (opcional)</p>
       <select id="deb"><option value="">Ninguno</option><option value="torbox">Torbox</option><option value="alldebrid">AllDebrid</option><option value="premiumize">Premiumize</option></select>
       <input id="debKey" type="password" placeholder="Tu API key" autocomplete="off" hidden>
-      <p class="note" id="debNote" hidden style="margin:-2px 0 12px">Se aplica a Torrentio, Comet y Filtorrent. Tu clave queda dentro del enlace del addon en tu cuenta de Nuvio; esta página no la guarda.</p>
+      <p class="note" id="debNote" hidden style="margin:-2px 0 12px">Se aplica a Torrentio y Filtorrent. Comet siempre se instala con su enlace original. Tu clave queda dentro del enlace del addon en tu cuenta de Nuvio; esta página no la guarda.</p>
       <label class="opt"><input type="checkbox" id="optB"><span>CustomBadge Personalizado<small>Marca para ver el enlace y copiarlo</small></span></label>
       <div id="badgeBox" hidden>
         <button type="button" class="bx" id="badgeCopy"><span id="badgeHint">Toca para copiar el enlace</span><pre id="badgeJson"></pre></button>
@@ -223,7 +223,7 @@ const CONFIG = {
   ADDONS: [
     {name:"Cinemeta (Requerido)", desc:"Catálogos y metadatos base", url:"stremio://v3-cinemeta.strem.io/manifest.json"},
     {name:"Torrentio", desc:"Streams en latino y español", debrid:"torrentio", url:"https://torrentio.strem.fun/language=latino,spanish|qualityfilter=unknown,cam,scr,other,480p/manifest.json"},
-    {name:"Comet", desc:"Streams con prioridad en latino", debrid:"comet", url:"https://comet.elfhosted.com/eyJtYXhSZXN1bHRzUGVyUmVzb2x1dGlvbiI6MCwibWF4U2l6ZSI6MCwiY2FjaGVkT25seSI6ZmFsc2UsInNvcnRDYWNoZWRVbmNhY2hlZFRvZ2V0aGVyIjpmYWxzZSwicmVtb3ZlVHJhc2giOnRydWUsInJlc3VsdEZvcm1hdCI6WyJhbGwiXSwiZGVicmlkU2VydmljZXMiOltdLCJlbmFibGVUb3JyZW50IjpmYWxzZSwiZGVkdXBsaWNhdGVTdHJlYW1zIjpmYWxzZSwic2NyYXBlRGVicmlkQWNjb3VudFRvcnJlbnRzIjpmYWxzZSwiZGVicmlkU3RyZWFtUHJveHlQYXNzd29yZCI6IiIsImxhbmd1YWdlcyI6eyJyZXF1aXJlZCI6WyJlbiIsImVzIiwibGEiXSwiYWxsb3dlZCI6WyJlbiIsImVzIiwibGEiXSwiZXhjbHVkZSI6WyJhciIsImJnIiwiYm4iLCJjcyIsImRhIiwiZGUiLCJlbCIsImV0IiwiZmEiLCJmaSIsImZyIiwiZ3UiLCJoZSIsImhpIiwiaHIiLCJodSIsImlkIiwiaXQiLCJrbiIsImx0IiwibHYiLCJtbCIsIm1yIiwibXMiLCJubCIsIm5vIiwicGEiLCJwbCIsInB0Iiwicm8iLCJydSIsInNrIiwic2wiLCJzciIsInN2IiwidGEiLCJ0ZSIsInRoIiwidHIiLCJ1ayIsInZpIiwiemgiXSwicHJlZmVycmVkIjpbImxhIl19LCJyZXNvbHV0aW9ucyI6eyJyNTc2cCI6ZmFsc2UsInI0ODBwIjpmYWxzZSwicjM2MHAiOmZhbHNlLCJyMjQwcCI6ZmFsc2UsInVua25vd24iOmZhbHNlfSwib3B0aW9ucyI6eyJyZW1vdmVfcmFua3NfdW5kZXIiOi0xMDAwMDAwMDAwMCwiYWxsb3dfZW5nbGlzaF9pbl9sYW5ndWFnZXMiOmZhbHNlLCJyZW1vdmVfdW5rbm93bl9sYW5ndWFnZXMiOmZhbHNlfX0=/manifest.json"},
+    {name:"Comet", desc:"Streams con prioridad en latino", debrid:"comet", noDebrid:true, url:"https://comet.elfhosted.com/eyJtYXhSZXN1bHRzUGVyUmVzb2x1dGlvbiI6MCwibWF4U2l6ZSI6MCwiY2FjaGVkT25seSI6ZmFsc2UsInNvcnRDYWNoZWRVbmNhY2hlZFRvZ2V0aGVyIjpmYWxzZSwicmVtb3ZlVHJhc2giOnRydWUsInJlc3VsdEZvcm1hdCI6WyJhbGwiXSwiZGVicmlkU2VydmljZXMiOltdLCJlbmFibGVUb3JyZW50IjpmYWxzZSwiZGVkdXBsaWNhdGVTdHJlYW1zIjpmYWxzZSwic2NyYXBlRGVicmlkQWNjb3VudFRvcnJlbnRzIjpmYWxzZSwiZGVicmlkU3RyZWFtUHJveHlQYXNzd29yZCI6IiIsImxhbmd1YWdlcyI6eyJyZXF1aXJlZCI6WyJlbiIsImVzIiwibGEiXSwiYWxsb3dlZCI6WyJlbiIsImVzIiwibGEiXSwiZXhjbHVkZSI6WyJhciIsImJnIiwiYm4iLCJjcyIsImRhIiwiZGUiLCJlbCIsImV0IiwiZmEiLCJmaSIsImZyIiwiZ3UiLCJoZSIsImhpIiwiaHIiLCJodSIsImlkIiwiaXQiLCJrbiIsImx0IiwibHYiLCJtbCIsIm1yIiwibXMiLCJubCIsIm5vIiwicGEiLCJwbCIsInB0Iiwicm8iLCJydSIsInNrIiwic2wiLCJzciIsInN2IiwidGEiLCJ0ZSIsInRoIiwidHIiLCJ1ayIsInZpIiwiemgiXSwicHJlZmVycmVkIjpbImxhIl19LCJyZXNvbHV0aW9ucyI6eyJyNTc2cCI6ZmFsc2UsInI0ODBwIjpmYWxzZSwicjM2MHAiOmZhbHNlLCJyMjQwcCI6ZmFsc2UsInVua25vd24iOmZhbHNlfSwib3B0aW9ucyI6eyJyZW1vdmVfcmFua3NfdW5kZXIiOi0xMDAwMDAwMDAwMCwiYWxsb3dfZW5nbGlzaF9pbl9sYW5ndWFnZXMiOmZhbHNlLCJyZW1vdmVfdW5rbm93bl9sYW5ndWFnZXMiOmZhbHNlfX0=/manifest.json"},
     {name:"DeepFlix", desc:"Addon adicional", url:"https://mg.homelabx.qzz.io/manifest.json"},
     {name:"AddonLatam", desc:"Addon adicional", url:"https://addonlatam.duckdns.org/A0wrYOb7z4LiG5vrhQwcb-g4/manifest.json"},
     {name:"AnimES", desc:"Anime en español", url:"https://pigamer37.alwaysdata.net/onAirCatalogs=animeav1%2Chenaojara%2Ctioanime%2Cjkanime/manifest.json"},
@@ -274,7 +274,7 @@ function mergeAddons(cur, chosen, svc, dkey) {
   let list = cur.map(a => ({ url: a.url, name: a.name, enabled: a.enabled }));
   let added = 0, changed = 0;
   chosen.forEach(a => {
-    const url = svc && a.debrid ? debridUrl(a, svc, dkey) : fixUrl(a.url), canon = canonUrl(a, a.url);
+    const url = svc && a.debrid && !a.noDebrid ? debridUrl(a, svc, dkey) : fixUrl(a.url), canon = canonUrl(a, a.url);
     const idx = list.map((x, i) => canonUrl(a, x.url) === canon ? i : -1).filter(i => i >= 0);
     if (!idx.length) { list.push({ url, name: a.name, enabled: true }); added++; return; }
     if (!a.debrid) return;
