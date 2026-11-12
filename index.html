@@ -125,6 +125,22 @@ input[type=checkbox],input[type=radio]{accent-color:var(--c2);width:18px;height:
   .steps li{font-size:.8rem}
 }
 @media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}}
+.dls{max-width:1200px;margin:0 auto 26px;padding:0 24px}
+.dlh{margin:0 0 12px;font-size:.9rem;font-weight:600;letter-spacing:.02em;color:var(--mut)}
+.dlg{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.dl{--k:#b052f5;position:relative;display:flex;align-items:center;gap:16px;min-height:112px;padding:18px 20px;border-radius:18px;text-decoration:none;color:var(--tx);overflow:hidden;border:1.5px solid color-mix(in srgb,var(--k) 60%,transparent);background:linear-gradient(135deg,color-mix(in srgb,var(--k) 30%,#05060f),#05060f 75%);transition:transform .2s,box-shadow .2s}
+.dl:hover{transform:translateY(-3px);box-shadow:0 12px 30px color-mix(in srgb,var(--k) 35%,transparent)}
+.dl>img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dl .ic{flex:none;position:relative;width:52px;height:52px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--k) 25%,transparent);color:var(--k)}
+.dl .ic svg{width:28px;height:28px}
+.dl .tx{position:relative;min-width:0}
+.dl b{display:block;font-size:1.05rem}
+.dl small{display:block;color:var(--mut);font-size:.8rem}
+.dl .go{position:relative;margin-left:auto;font-size:1.3rem;color:var(--k)}
+.dl.cov{align-items:flex-end;min-height:140px}
+.dl.cov::after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 35%,#000c)}
+.dl.cov .ic,.dl.cov .go{display:none}.dl.cov .tx{z-index:1}
+@media(max-width:900px){.dls{padding:0 16px}.dlg{grid-template-columns:1fr}.dl{min-height:84px;padding:14px 16px}.dl.cov{min-height:120px}}
 [hidden]{display:none!important}
 </style>
 </head>
@@ -139,6 +155,10 @@ input[type=checkbox],input[type=radio]{accent-color:var(--c2);width:18px;height:
   <ol class="steps"><li>Inicia sesión</li><li>Elige tu perfil</li><li>Instala colección y addons</li></ol>
 </header>
 
+<section class="dls" id="dlBox" hidden>
+  <h2 class="dlh">Descarga la app de Nuvio</h2>
+  <div class="dlg" id="dl"></div>
+</section>
 <main>
   <section>
     <div class="demo" id="demo" hidden>Estás viendo una vista de ejemplo. Define <code>COLLECTION_URL</code> en la configuración del HTML para mostrar tu colección real.</div>
@@ -207,6 +227,12 @@ const CONFIG = {
   // Enlace de tu página principal: es a donde lleva el logo de arriba.
   HOME_URL: "https://nexoraunktools.blogspot.com",
   // Enlace de tu página de addons: a donde llevan los dos botones "Addons".
+  // Portadas de descarga de arriba. Para usar tu propia imagen de portada agrega cover:"enlace.png" (si ya trae el texto dibujado, agrega hideTitle:true).
+  DESCARGAS: [
+    { icon: "phone", name: "Nuvio para teléfono", desc: "Versión de celular · última versión", color: "#b052f5", url: "https://github.com/NuvioMedia/NuvioMobile/releases/latest", cover: "" },
+    { icon: "tv", name: "Nuvio para TV", desc: "Android TV · última versión", color: "#18d6ee", url: "https://github.com/NuvioMedia/NuvioTV/releases/latest", cover: "" },
+    { icon: "github", name: "Nuvio en GitHub", desc: "Código y todas las versiones", color: "#c9d1d9", url: "https://github.com/NuvioMedia", cover: "" }
+  ],
   ADDONS_URL: "https://apps.nexoraunktools.com/addons-nuvio/",
   // Enlace RAW al JSON de tu colección (el que ya generas), por ejemplo en tu repo de GitHub:
   COLLECTION_URL: "https://raw.githubusercontent.com/Nexora-Unk/nexora-nuvio-assets/refs/heads/main/nexora-nuvio-collection-v7.json",
@@ -377,6 +403,26 @@ async function copyCover() {
   setTimeout(() => { $("#cvTag").textContent = "Toca para copiar el custom badge"; }, 2200);
 }
 
+/* ---------- Descargas de la app ---------- */
+const ICONS = {
+  phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><rect x="7" y="2.5" width="10" height="19" rx="2.5"/><circle cx="12" cy="18" r=".9" fill="currentColor"/></svg>',
+  tv: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><rect x="2.5" y="4" width="19" height="13" rx="2"/><path d="M8 21h8M12 17v4"/></svg>',
+  github: '<svg viewBox="0 0 16 16" fill="currentColor" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/></svg>'
+};
+function renderDownloads() {
+  if (!CONFIG.DESCARGAS.length) return;
+  $("#dlBox").hidden = false; const box = $("#dl");
+  CONFIG.DESCARGAS.forEach(d => {
+    const hasCover = isUrl(d.cover) || /^[\w./-]+\.(png|jpe?g|webp|gif)$/i.test(d.cover || "");
+    const a = el("a", "dl" + (hasCover ? " cov" : "")); a.href = d.url; a.target = "_blank"; a.rel = "noopener noreferrer"; a.style.setProperty("--k", d.color || "#b052f5");
+    a.setAttribute("aria-label", d.name);
+    if (hasCover) { const im = new Image(); im.alt = ""; im.loading = "lazy"; im.src = d.cover; im.onerror = () => { im.remove(); a.classList.remove("cov"); }; a.append(im); }
+    const ic = el("span", "ic"); ic.innerHTML = ICONS[d.icon] || ICONS.github;
+    const tx = el("span", "tx"); if (!(d.hideTitle && hasCover)) { tx.append(el("b", "", d.name)); if (d.desc) tx.append(el("small", "", d.desc)); }
+    a.append(ic, tx, el("span", "go", "↗")); box.append(a);
+  });
+}
+
 /* ---------- Eventos ---------- */
 document.title = CONFIG.TITULO;
 $("#brand").href = CONFIG.HOME_URL || "/";
@@ -391,6 +437,7 @@ $("#mk").onclick = createProfile;
 $("#install").onclick = install;
 $("#cover").onclick = copyCover;
 $("#tog").onclick = () => { const ds = [...document.querySelectorAll("#preview details")], open = ds.some(d => d.open); ds.forEach(d => { d.open = !open; }); $("#tog").textContent = open ? "Abrir todas" : "Cerrar todas"; };
+renderDownloads();
 loadCollection();
 </script>
 </body>
